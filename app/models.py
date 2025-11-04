@@ -10,7 +10,7 @@ def retrieve_users():
     if not conn:
         return []
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM users")
+    cursor.execute("SELECT * FROM Users")
     result = cursor.fetchall()
     cursor.close()
     conn.close()
