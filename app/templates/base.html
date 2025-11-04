@@ -13,28 +13,21 @@
     />
   </head>
   <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow-sm position-relative">
       <div class="container-fluid">
 
         <!-- Brand -->
-        <a class="navbar-brand fw-bold fs-1 ps-4 me-4" href="#">Groove Journal</a>
+        <a class="navbar-brand fw-bold fs-1" href="#">Groove Journal</a>
 
-        <!-- Toggler -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Centered Nav Links -->
-        <div class="collapse navbar-collapse justify-content-center position-absolute start-50 translate-middle-x" id="navbarSupportedContent">
+        <!-- Centered Links -->
+        <div class="collapse navbar-collapse justify-content-center position-absolute top-50 start-50 translate-middle" id="navbarSupportedContent">
           <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="/collection/1">My Collection</a></li>
             <li class="nav-item"><a class="nav-link" href="/diary/1">My Diary</a></li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Dropdown
-              </a>
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                 data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="#">Action</a></li>
                 <li><a class="dropdown-item" href="#">Another action</a></li>
@@ -46,10 +39,17 @@
           </ul>
         </div>
 
-      </div>
-    </nav>
+        <!-- Toggler for mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <main class="flex-grow-1 container-fluid p-0">
+      </div>
+    </nav>    
+
+<main class="flex-grow-1 container-fluid p-0">
       <div class="container-fluid p-0 pb-6">{% block content %}{% endblock %}</div>
     </main>
 
