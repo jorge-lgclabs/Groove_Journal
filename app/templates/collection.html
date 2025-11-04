@@ -1,0 +1,73 @@
+{% extends "base.html" %} 
+{% block title %}
+  Home - My Flask App
+{% endblock %} 
+
+{%block content %}
+
+
+<div class="container py-4" >
+
+  <h2>My Collections</h2>
+  <span style="
+    display: inline-block;
+    width: 20.5%;
+    height: 4px;
+    background-color: #FFD700;
+    vertical-align: middle;
+    margin-left: 0;
+  "></span>
+
+  <!-- Add Album Button -->
+  <div class="mb-3 pt-4 pb-0">
+    <a href="/collection/add" class="btn btn-outline-dark btn-hollow w-100">
+      <i class="bi bi-plus me-2"></i>
+      Add Album
+    </a>
+  </div>
+  <div class="accordion" id="albumsAccordion">
+    <!-- Album per accordion item --->
+    {% for album in albums %}
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading{{ loop.index }}">
+        <button class="accordion-button collapsed" 
+                type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#collapse{{ loop.index }}" 
+                aria-expanded="false" 
+                aria-controls="collapse{{ loop.index }}">
+          {{ album.album_title }} 
+        </button>
+      </h2>
+      
+      <!-- Accordion collapsible content -->
+      <div id="collapse{{ loop.index }}" 
+           class="accordion-collapse collapse" 
+           aria-labelledby="heading{{ loop.index }}" 
+           data-bs-parent="#albumsAccordion">
+        
+        <!-- Accordion body: list of tracks -->
+        <div class="accordion-body">
+          <ol>
+            {% for track in album.tracks %}
+            <!-- Tracks --->
+            <li class="text-start">
+              {{ track.track_title }} 
+              {% if track.artists %}
+                <!-- Display all artists for this track, joined by commas -->
+                - <em>{{ track.artists | join(', ') }}</em>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ol>
+        </div> <!-- End accordion-body -->
+        
+      </div> <!-- End accordion-collapse -->
+      
+    </div> <!-- End accordion-item -->
+    {% endfor %}
+    
+  </div> <!-- End main accordion -->
+</div> <!-- End main accordion -->
+{% endblock %}
+
