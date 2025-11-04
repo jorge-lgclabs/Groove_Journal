@@ -1,0 +1,74 @@
+{% extends "base.html" %} 
+{% block title %}
+Add Diary Entry
+{% endblock %} 
+
+{%block content %}
+<div class="container py-5">
+  <h2 class="fw-bold mb-3">Add New Diary Entry</h2>
+
+  <!-- Short yellow line under heading -->
+  <span
+    style="
+      display: inline-block;
+      width: 12.5%;
+      height: 4px;
+      background-color: #ffd700;
+      margin-bottom: 1rem;
+    "
+  ></span>
+
+  <form action="#" method="POST">
+    <!-- Entry Title -->
+    <div class="mb-4">
+      <label for="album_id" class="form-label fw-bold">Select Album</label>
+      <select class="form-select" id="album_id" name="album_id" required>
+        <option value="" disabled selected>Select an album</option>
+        {% for album in albums %}
+        <option value="{{ album.id }}">{{ album.album_title }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Datetime -->
+    <div class="mb-4">
+      <label for="entry_datetime" class="form-label fw-bold">Date & Time</label>
+      <input
+        type="datetime-local"
+        class="form-control"
+        id="entry_datetime"
+        name="entry_datetime"
+        value="{{ current_time }}"
+        required
+      />
+    </div>
+
+    <!-- Entry Content -->
+    <div class="mb-4">
+      <label for="entry_content" class="form-label fw-bold">Content</label>
+      <textarea
+        class="form-control"
+        id="entry_content"
+        name="entry_content"
+        rows="8"
+        placeholder="Write your diary entry here..."
+        required
+      ></textarea>
+    </div>
+
+    <!-- Submit -->
+    <button
+      type="submit"
+      class="btn w-100"
+      style="
+        background-color: #ffd700;
+        color: #000;
+        border-radius: 0;
+        border: 2px solid #ffd700;
+      "
+    >
+      <i class="bi bi-journal-plus me-2"></i> Add Entry
+    </button>
+  </form>
+</div>
+{% endblock %}

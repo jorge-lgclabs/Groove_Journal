@@ -26,6 +26,17 @@ def my_diary(user_id):
     return render_template("diary.html")
 
 
+@main_blueprint.route("/add_diary/", methods=["GET"])
+def add_diary():
+    albums = retrieve_user_collection(1)
+    return render_template("add_diary.html", albums=albums)
+
+
+@main_blueprint.route("/add_album/", methods=["GET"])
+def add_album():
+    return render_template("add_album.html")
+
+
 # ------------------#
 # API routes
 # ------------------#
