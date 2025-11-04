@@ -1,0 +1,133 @@
+{% extends "base.html" %} 
+{% block title %}Add Album{% endblock %} 
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold mb-3">Add New Album</h2>
+
+  <!-- Short yellow line under heading -->
+  <span
+    style="
+      display: inline-block;
+      width: 12.5%;
+      height: 4px;
+      background-color: #ffd700;
+      margin-bottom: 1rem;
+    "
+  ></span>
+
+  <!-- Album Form -->
+  <form action="#" method="POST">
+    <!-- Album Info -->
+    <div class="mb-4">
+      <label for="album_name" class="form-label fw-bold">Album Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="album_name"
+        name="album_name"
+        placeholder="Enter album name"
+        required
+      />
+    </div>
+
+    <div class="mb-4">
+      <label for="release_year" class="form-label fw-bold">Release Year</label>
+      <input
+        type="number"
+        class="form-control"
+        id="release_year"
+        name="release_year"
+        placeholder="2025"
+        required
+      />
+    </div>
+
+    <div class="mb-4">
+      <label for="album_label" class="form-label fw-bold">Label</label>
+      <input
+        type="text"
+        class="form-control"
+        id="album_label"
+        name="album_label"
+        placeholder="Record label"
+      />
+    </div>
+
+    <div class="mb-4">
+      <label for="album_country" class="form-label fw-bold">Country</label>
+      <input
+        type="text"
+        class="form-control"
+        id="album_country"
+        name="album_country"
+        placeholder="Country of release"
+      />
+    </div>
+    <!-- Tracks Section -->
+    <h4 class="fw-bold mt-5 mb-3">Tracks</h4>
+
+    <div id="tracks-container">
+      <div class="row mb-3 track-row">
+        <div class="col-md-6">
+          <input
+            type="text"
+            class="form-control"
+            name="track_name[]"
+            placeholder="Track Name"
+            required
+          />
+        </div>
+        <div class="col-md-6">
+          <input
+            type="text"
+            class="form-control"
+            name="track_artist[]"
+            placeholder="Artist"
+            required
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Track Button -->
+    <button type="button" class="btn btn-outline-dark mb-4" id="add-track-btn">
+      <i class="bi bi-plus me-2"></i> Add Track
+    </button>
+
+    <!-- Submit -->
+    <button
+      type="submit"
+      class="btn w-100"
+      style="
+        background-color: #ffd700;
+        color: #000;
+        border-radius: 0;
+        border: 2px solid #ffd700;
+      "
+    >
+      <i class="bi bi-record-circle me-2"></i> Add Album
+    </button>
+  </form>
+</div>
+
+<!-- Script for adding tracks -->
+<script>
+  const addTrackBtn = document.getElementById("add-track-btn");
+  const tracksContainer = document.getElementById("tracks-container");
+
+  addTrackBtn.addEventListener("click", () => {
+    const newTrack = document.createElement("div");
+    newTrack.classList.add("row", "mb-3", "track-row");
+    newTrack.innerHTML = `
+      <div class="col-md-6">
+        <input type="text" class="form-control" name="track_name[]" placeholder="Track Name" required>
+      </div>
+      <div class="col-md-6">
+        <input type="text" class="form-control" name="track_artist[]" placeholder="Artist" required>
+      </div>
+    `;
+    tracksContainer.appendChild(newTrack);
+  });
+</script>
+{% endblock %}

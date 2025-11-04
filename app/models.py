@@ -12,7 +12,6 @@ def retrieve_users():
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM users")
     result = cursor.fetchall()
-    print(result)
     cursor.close()
     conn.close()
 
