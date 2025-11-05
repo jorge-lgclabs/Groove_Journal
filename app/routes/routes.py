@@ -31,6 +31,11 @@ def add_diary():
     albums = retrieve_user_collection(1)
     return render_template("add_diary.html", albums=albums)
 
+@main_blueprint.route("/edit_diary/", methods=["GET"])
+def edit_diary():
+    albums = retrieve_user_collection(1)
+    return render_template("edit_diary.html", albums=albums)
+
 
 @main_blueprint.route("/add_album/", methods=["GET"])
 def add_album():

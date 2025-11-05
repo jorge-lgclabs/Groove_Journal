@@ -1,0 +1,48 @@
+{% extends "base.html" %} 
+{% block title %}
+Add Diary Entry
+{% endblock %} 
+
+{%block content %}
+<div class="container py-5">
+  <h2 class="fw-bold mb-3">Edit Diary Entry</h2>
+
+  <!-- Short yellow line under heading -->
+  <span style="
+      display: inline-block;
+      width: 12.5%;
+      height: 4px;
+      background-color: #ffd700;
+      margin-bottom: 1rem;
+    "></span>
+
+  <form action="#" method="POST">
+    <!-- Entry Title -->
+    <div class="mb-4">
+      <label for="album_id" class="form-label fw-bold">Album: Calpyso-Biguine-Merengue</label>
+    </div>
+
+    <!-- Datetime -->
+    <div class="mb-4">
+      <label for="entry_datetime" class="form-label fw-bold">Date &amp; Time</label>
+      <input type="datetime-local" class="form-control" id="entry_datetime" name="entry_datetime" required="" value="2024-10-24T14:30">
+    </div>
+
+    <!-- Entry Content -->
+    <div class="mb-4">
+      <label for="entry_content" class="form-label fw-bold">Content</label>
+      <textarea class="form-control" id="entry_content" name="entry_content" rows="8" required="" placeholder="">I've never heard music from Martinique, absolutely fascinating album. I've heard of Calypso and Merengue, but never Biguine. Very fun listening experience!</textarea>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="btn w-100" style="
+        background-color: #ffd700;
+        color: #000;
+        border-radius: 0;
+        border: 2px solid #ffd700;
+      ">
+      <i class="bi bi-journal-plus me-2"></i> Save Entry
+    </button>
+  </form>
+</div>
+{% endblock %}
