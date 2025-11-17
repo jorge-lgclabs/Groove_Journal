@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, render_template
+from flask import Blueprint, jsonify, redirect, render_template, url_for
 
 from app.models import reset_database, retrieve_user_albums, retrieve_users
 
@@ -53,5 +53,7 @@ def get_all_users():
 
 @api_blueprint.route("/resetDB", methods=["GET"])
 def reset_db():
-    reset_database()
-    return jsonify(retrieve_users()), 200
+    # TODO: uncomment the line below to enable DB reset.
+    # reset_database()
+    print("Database has been reset.")
+    return redirect(url_for("main.index"))
