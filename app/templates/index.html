@@ -7,64 +7,61 @@
   <div class="container-fluid">
     <div class="row align-items-center">
       <!-- Left Column: Hero / Welcome (1/3) -->
-      <div class="col-md-4 d-flex flex-column justify-content-center bg-light p-5"
-        style="height: 720px;">
-  
-        <span class="start-0 bottom-2 my-4" 
-        style="width: 50px;height: 4px; background-color: #FFD700;"></span>
+      <div class="col-md-4 d-flex flex-column justify-content-center bg-light p-5" style="height: 720px;">
+        <span class="start-0 bottom-2 my-4" style="width: 50px;height: 4px; background-color: #FFD700;"></span>
         <h1 class="display-5 fw-bold">Welcome to Groove Journal</h1>
-        <p class="lead">
-          Keep track of your record collection, write your diary, and explore music like never before.
-        </p>
-        <span class="start-0 bottom-2 mt-2 mb-4" 
-        style="width: 50px;height: 4px; background-color: #FFD700;"></span>
-        <a href="/collection/1" class="btn btn-outline-dark btn-lg mt-3" 
-           style="border-radius: 0; border-width: 2px;">
+        {% if session.get('user_id') %}
+          <p class="lead">
+            Hello, <strong>{{ session.get('user_fname') }} {{ session.get('user_lname') }}</strong>! Keep track of your record collection, write your diary, and explore music like never before.
+          </p>
+        {% else %}
+          <p class="lead">
+            Keep track of your record collection, write your diary, and explore music like never before.
+          </p>
+        {% endif %}
+        <span class="start-0 bottom-2 mt-2 mb-4" style="width: 50px;height: 4px; background-color: #FFD700;"></span>
+        <a href="/collection/1" class="btn btn-outline-dark btn-lg mt-3" style="border-radius: 0; border-width: 2px;">
           Get started
         </a>
-        <a href="/api/resetDB" class="btn btn-outline-danger btn-lg mt-3" 
-           style="border-radius: 0; border-width: 2px;">
+        <a href="/api/resetDB" class="btn btn-outline-danger btn-lg mt-3" style="border-radius: 0; border-width: 2px;">
           Reset Database
         </a>
       </div>
-     
+
       <!-- Right Column: hero/ Image (2/3) -->
       <div class="col-md-8 p-0" style="height: 720px; overflow: hidden;">
-        <img src="{{ url_for('static', filename='images/hero.png') }}"
-           class="w-100 h-100"
-           style="object-fit: cover;"
-           alt="Hero Image">
+        <img src="{{ url_for('static', filename='images/hero.png') }}" class="w-100 h-100" style="object-fit: cover;" alt="Hero Image">
       </div>
-
     </div>
   </div>
 </section>
+
 <section class="py-5 bg-light">
   <div class="container">
     <h2 class="text-center mb-4">User List</h2>
 
-    <div class="table-responsive">
-      <table class="table table-striped table-bordered text-center">
-        <thead class="table-dark">
-          <tr>
-            <th>ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for user in users %}
-          <tr>
-            <td>{{ user.user_id }}</td>
-            <td>{{ user.user_fname }}</td>
-            <td>{{ user.user_lname }}</td>
-            <td>{{ user.user_email }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+    <div class="row">
+      {% for user in users %}
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ user.user_fname }} {{ user.user_lname }}</h5>
+            <p class="card-text text-muted">{{ user.user_email }}</p>
+            <form action="/api/select_user" method="POST">
+              <input type="hidden" name="user_id" value="{{ user.user_id }}">
+              <input type="hidden" name="user_fname" value="{{ user.user_fname }}">
+              <input type="hidden" name="user_lname" value="{{ user.user_lname }}">
+              <button type="submit" class="btn btn-primary">Select User</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
     </div>
+
+    {% if not users %}
+    <p class="text-center text-muted">No users found.</p>
+    {% endif %}
   </div>
 </section>
 {% endblock %}

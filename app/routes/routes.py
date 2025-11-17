@@ -1,4 +1,12 @@
-from flask import Blueprint, jsonify, redirect, render_template, url_for
+from flask import (
+    Blueprint,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 
 from app.models import reset_database, retrieve_user_albums, retrieve_users
 
@@ -11,8 +19,14 @@ api_blueprint = Blueprint("user", __name__, url_prefix="/api")
 # ------------------#
 @main_blueprint.route("/", methods=["GET"])
 def index():
+
+    users_id = session.get("user_id")
+    if not users_id:
+        # For demonstration purposes, we set a default user_id in the session.
+        session["user_id"] = 1
+
     users = retrieve_users()
-    return render_template("index.html", name="Test_user", users=users)
+    return render_template("index.html", users=users)
 
 
 @main_blueprint.route("/albums/<int:user_id>", methods=["GET"])
@@ -56,4 +70,18 @@ def reset_db():
     # TODO: uncomment the line below to enable DB reset.
     # reset_database()
     print("Database has been reset.")
+    return redirect(url_for("main.index"))
+
+
+@api_blueprint.route("/select_user", methods=["POST"])
+def select_user():
+    user_id = request.form.get("user_id")
+    user_fname = request.form.get("user_fname")
+    user_lname = request.form.get("user_lname")
+
+    if user_id:
+        session["user_id"] = user_id
+        session["user_fname"] = user_fname
+        session["user_lname"] = user_lname
+
     return redirect(url_for("main.index"))
