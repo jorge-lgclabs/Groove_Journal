@@ -18,7 +18,7 @@ def retrieve_users():
     return result
 
 
-def retrieve_user_collection(user_id):
+def retrieve_user_albums(user_id):
     """
     Retrieve album collection of user_id
     """
