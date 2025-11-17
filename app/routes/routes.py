@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, render_template
 
-from app.models import retrieve_user_collection, retrieve_users
+from app.models import reset_database, retrieve_user_collection, retrieve_users
 
 main_blueprint = Blueprint("main", __name__)
 api_blueprint = Blueprint("user", __name__, url_prefix="/api")
@@ -31,6 +31,7 @@ def add_diary():
     albums = retrieve_user_collection(1)
     return render_template("add_diary.html", albums=albums)
 
+
 @main_blueprint.route("/edit_diary/", methods=["GET"])
 def edit_diary():
     albums = retrieve_user_collection(1)
@@ -47,4 +48,10 @@ def add_album():
 # ------------------#
 @api_blueprint.route("/users", methods=["GET"])
 def get_all_users():
+    return jsonify(retrieve_users()), 200
+
+
+@api_blueprint.route("/resetDB", methods=["GET"])
+def reset_db():
+    reset_database()
     return jsonify(retrieve_users()), 200

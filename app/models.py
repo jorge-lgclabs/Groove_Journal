@@ -51,3 +51,23 @@ def retrieve_user_collection(user_id):
     conn.close()
 
     return formatted_result
+
+
+def reset_database():
+    """
+    Reset the database to its initial state
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor()
+    try:
+        # TODO: replace "your_procedure_name" with the actual stored procedure to reset_database
+        cursor.callproc("your_procedure_name")
+    except Exception as e:
+        raise e
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
