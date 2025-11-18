@@ -26,25 +26,9 @@ def retrieve_user_albums(user_id):
     if not conn:
         return []
 
-    sql = """
-    SELECT 
-        a.album_id, a.album_title,
-        t.track_id, t.track_title,
-        aht.track_order_num,
-        ar.artist_id, ar.artist_name
-            FROM Albums a
-            JOIN Albums_have_Owners aho ON a.album_id = aho.album_id
-            JOIN Users u ON u.user_id = aho.user_id
-            JOIN Albums_have_Tracks aht ON a.album_id = aht.album_id
-            JOIN Tracks t ON t.track_id = aht.track_id
-            JOIN Artists_have_Tracks aht2 ON t.track_id = aht2.track_id
-            JOIN Artists ar ON ar.artist_id = aht2.artist_id
-            WHERE u.user_id = %s
-            ORDER BY a.album_id, aht.track_order_num;
-    """
+    sql = 'CALL sp_GetUserAlbums(%s)'
     cursor = conn.cursor(dictionary=True)
     cursor.execute(sql, [user_id])
-
     result = cursor.fetchall()
     formatted_result = group_albums_tracks_artists(result)
     cursor.close()
@@ -58,7 +42,7 @@ def retrieve_diaries(user_id):
     Retrieve diaries of user_id
 
     Output: list of dictionaries
-     [{ diary_entry_id, diary_entry_date_time, album_title, }, ...]
+     [{ diary_entry_id, diary_entry_datetime, diary_entry, album_title}, ...]
     """
     conn = get_connection()
     if not conn:
@@ -66,8 +50,8 @@ def retrieve_diaries(user_id):
 
     cursor = conn.cursor(dictionary=True)
     try:
-        # TODO: replace "your_procedure_name" with the actual stored procedure to retrieve_diaries
-        cursor.callproc("your_procedure_name", [user_id])
+        sql = "CALL sp_GetUserDiaries(%s)"
+        cursor.execute(sql, [user_id])
         result = cursor.fetchall()
         return result
     except Exception as e:
@@ -90,8 +74,8 @@ def retrieve_all_tracks():
 
     cursor = conn.cursor(dictionary=True)
     try:
-        # TODO: replace "your_procedure_name" with the actual stored procedure to retrieve_all_tracks
-        cursor.callproc("your_procedure_name")
+        sql = "CALL sp_GetTracks"
+        cursor.execute(sql)
         result = cursor.fetchall()
         return result
     except Exception as e:
@@ -114,8 +98,8 @@ def retrieve_all_artists():
 
     cursor = conn.cursor(dictionary=True)
     try:
-        # TODO: replace "your_procedure_name" with the actual stored procedure to retrieve_all_artists
-        cursor.callproc("your_procedure_name")
+        sql = "CALL sp_GetArtists"
+        cursor.execute(sql)
         result = cursor.fetchall()
         return result
     except Exception as e:
@@ -124,6 +108,24 @@ def retrieve_all_artists():
         cursor.close()
         conn.close()
 
+def delete_diary_entry(diary_entry_id):
+    """
+    Delete diary_entry of diary_entry_id
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        sql = "CALL sp_DeleteDiaryEntry(%s)"
+        cursor.execute(sql, [diary_entry_id])
+        conn.commit()
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
 
 def reset_database():
     """
@@ -135,8 +137,9 @@ def reset_database():
 
     cursor = conn.cursor()
     try:
-        # TODO: replace "your_procedure_name" with the actual stored procedure to reset_database
-        cursor.callproc("your_procedure_name")
+        sql = "CALL sp_ResetInitialData"
+        cursor.execute(sql)
+        conn.commit()
     except Exception as e:
         raise e
     finally:
