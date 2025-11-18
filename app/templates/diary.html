@@ -28,11 +28,18 @@ My diary
   {% for diary in diaries %}
   <div class="card mb-4 shadow-sm">
     <div class="card-header d-flex align-items-center bg-light">
-      <span class="fw-bold">{{ diary.diary_entry_date_time }}</span>
+      <span class="fw-bold">{{ diary.diary_entry_datetime }}</span>
       <a href="/edit_diary/{{ diary.diary_entry_id }}" class="btn btn-sm btn-outline-secondary ms-2">Edit</a>
-      <button aria-label="Delete" class="btn btn-sm btn-outline-danger ms-2">
-        <i class="bi bi-trash"></i>
-      </button>
+
+
+      <form action="/api/delete_diary" onsubmit="return confirm('Are you sure you want to delete this diary entry?');" method="POST">
+        <input type="hidden" name="diary_entry_id" value="{{ diary.diary_entry_id }}">
+        <button type="submit" aria-label="Delete" class="btn btn-sm btn-outline-danger ms-2">
+          <i class="bi bi-trash"></i>
+        </button>
+
+
+
       {% if diary.icon %}
       <span class="badge bg-warning text-dark ms-auto">{{ diary.icon }}</span>
       {% endif %}
