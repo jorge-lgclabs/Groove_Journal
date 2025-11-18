@@ -18,7 +18,7 @@ def retrieve_users():
     return result
 
 
-def retrieve_user_collection(user_id):
+def retrieve_user_albums(user_id):
     """
     Retrieve album collection of user_id
     """
@@ -51,3 +51,95 @@ def retrieve_user_collection(user_id):
     conn.close()
 
     return formatted_result
+
+
+def retrieve_diaries(user_id):
+    """
+    Retrieve diaries of user_id
+
+    Output: list of dictionaries
+     [{ diary_entry_id, diary_entry_date_time, album_title, }, ...]
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        # TODO: replace "your_procedure_name" with the actual stored procedure to retrieve_diaries
+        cursor.callproc("your_procedure_name", [user_id])
+        result = cursor.fetchall()
+        return result
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def retrieve_all_tracks():
+    """
+    retrieve all tracks in the DB
+
+    Output: list of dictionaries
+     [{track_id, track_title}, ...]
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        # TODO: replace "your_procedure_name" with the actual stored procedure to retrieve_all_tracks
+        cursor.callproc("your_procedure_name")
+        result = cursor.fetchall()
+        return result
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def retrieve_all_artists():
+    """
+    Retrieve all artists in the DB
+
+    Output: list of dictionaries
+     [{artist_id, artist_title}, ...]
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        # TODO: replace "your_procedure_name" with the actual stored procedure to retrieve_all_artists
+        cursor.callproc("your_procedure_name")
+        result = cursor.fetchall()
+        return result
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def reset_database():
+    """
+    Reset the database to its initial state
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor()
+    try:
+        # TODO: replace "your_procedure_name" with the actual stored procedure to reset_database
+        cursor.callproc("your_procedure_name")
+    except Exception as e:
+        raise e
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()

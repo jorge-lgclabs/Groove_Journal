@@ -1,0 +1,21 @@
+{% extends "base.html" %} 
+{% block title %}Artists{% endblock %} 
+{% block content %}
+<div class="container py-4">
+  <h1 class="text-center mb-4">Artists</h1>
+  <div class="row">
+    {% for artist in artists %}
+    <div class="col-md-4">
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Artist ID: {{ artist.artist_id }}</h5>
+          <p class="card-text">Name: {{ artist.artist_name }}</p>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No artists found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
