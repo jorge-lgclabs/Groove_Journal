@@ -20,24 +20,50 @@ api_blueprint = Blueprint("user", __name__, url_prefix="/api")
 @main_blueprint.route("/", methods=["GET"])
 def index():
 
-    users_id = session.get("user_id")
-    if not users_id:
-        # For demonstration purposes, we set a default user_id in the session.
-        session["user_id"] = 1
-
+    # Demo purposes: set default user in session
+    user_id = session.get("user_id", 1)
+    user_fname = session.get("user_fname", "jorge")
+    user_lname = session.get("user_lname", "Rodriguez")
     users = retrieve_users()
-    return render_template("index.html", users=users)
+    return render_template(
+        "index.html",
+        user_id=user_id,
+        user_fname=user_fname,
+        user_lname=user_lname,
+        users=users,
+    )
 
 
-@main_blueprint.route("/albums/<int:user_id>", methods=["GET"])
-def my_albums(user_id):
+@main_blueprint.route("/albums", methods=["GET"])
+def my_albums():
+    user_id = session.get("user_id", 1)
     albums = retrieve_user_albums(user_id)
     return render_template("albums.html", albums=albums)
 
 
-@main_blueprint.route("/diary/<int:user_id>", methods=["GET"])
-def my_diary(user_id):
-    return render_template("diary.html")
+@main_blueprint.route("/diary", methods=["GET"])
+def my_diary():
+    # Demo purposes: set default user in session
+    user_id = session.get("user_id", 1)
+
+    # TODO: Unccomment the line below to retrieve actual diary entries from the database.
+    # diaries = retrieve_user_albums(user_id)
+    diaries = [
+        {
+            "diary_entry_id": 1,
+            "diary_entry_date_time": "2024-01-01 10:00:00",
+            "diary_entry": "This is a sample diary entry.",
+            "album_title": "Sample Album",
+        },
+        {
+            "diary_entry_id": 2,
+            "diary_entry_date_time": "2024-01-02 11:00:00",
+            "diary_entry": "Another diary entry example.",
+            "album_title": "Another Album",
+        },
+    ]
+
+    return render_template("diary.html", diaries=diaries)
 
 
 @main_blueprint.route("/add_diary/", methods=["GET"])

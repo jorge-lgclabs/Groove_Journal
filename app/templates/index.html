@@ -12,7 +12,7 @@
         <h1 class="display-5 fw-bold">Welcome to Groove Journal</h1>
         {% if session.get('user_id') %}
           <p class="lead">
-            Hello, <strong>{{ session.get('user_fname') }} {{ session.get('user_lname') }}</strong>! Keep track of your record collection, write your diary, and explore music like never before.
+            Hello, <strong>{{ user_fname }} {{ user_lname }}</strong>! Keep track of your record collection, write your diary, and explore music like never before.
           </p>
         {% else %}
           <p class="lead">
@@ -20,7 +20,7 @@
           </p>
         {% endif %}
         <span class="start-0 bottom-2 mt-2 mb-4" style="width: 50px;height: 4px; background-color: #FFD700;"></span>
-        <a href="/collection/1" class="btn btn-outline-dark btn-lg mt-3" style="border-radius: 0; border-width: 2px;">
+        <a href="/albums" class="btn btn-outline-dark btn-lg mt-3" style="border-radius: 0; border-width: 2px;">
           Get started
         </a>
         <a href="/api/resetDB" class="btn btn-outline-danger btn-lg mt-3" style="border-radius: 0; border-width: 2px;">
@@ -39,7 +39,8 @@
 <section class="py-5 bg-light">
   <div class="container">
     <h2 class="text-center mb-4">User List</h2>
-
+    <p class="text-center text-muted mt-3" style="font-size: 0.9rem; color: #6c757d;">       Please select a user to access their albums.
+    </p>
     <div class="row">
       {% for user in users %}
       <div class="col-md-4 mb-4">
@@ -51,7 +52,9 @@
               <input type="hidden" name="user_id" value="{{ user.user_id }}">
               <input type="hidden" name="user_fname" value="{{ user.user_fname }}">
               <input type="hidden" name="user_lname" value="{{ user.user_lname }}">
-              <button type="submit" class="btn btn-primary">Select User</button>
+              <button type="submit" class="btn btn-primary" style="background-color: #FFD700; border-color: #FFD700; color: #000;">
+                Select User
+              </button>
             </form>
           </div>
         </div>

@@ -25,21 +25,29 @@ My diary
   </div>
 
 <div class="container py-4">
+  {% for diary in diaries %}
   <div class="card mb-4 shadow-sm">
     <div class="card-header d-flex align-items-center bg-light">
-      <span class="fw-bold">October 24, 2024 14:30:00</span>
-      <a href="/edit_diary" class="btn btn-sm btn-outline-secondary ms-2">Edit</a>
-      <button aria-label="Delete" class="btn btn-sm btn-outline-danger ms-2"><i class="bi bi-trash"></i></button>
-      <span class="badge bg-warning text-dark ms-auto">🎵</span>
+      <span class="fw-bold">{{ diary.diary_entry_date_time }}</span>
+      <a href="/edit_diary/{{ diary.diary_entry_id }}" class="btn btn-sm btn-outline-secondary ms-2">Edit</a>
+      <button aria-label="Delete" class="btn btn-sm btn-outline-danger ms-2">
+        <i class="bi bi-trash"></i>
+      </button>
+      {% if diary.icon %}
+      <span class="badge bg-warning text-dark ms-auto">{{ diary.icon }}</span>
+      {% endif %}
     </div>
     <div class="card-body">
       <p class="card-text">
-      I've never heard music from Martinique, absolutely fascinating album. I've heard of Calypso and Merengue, but never Biguine. Very fun listening experience!
+        {{ diary.diary_entry }}
       </p>
     </div>
     <div class="card-footer d-flex justify-content-between small text-muted">
-      <span>Album: Calpyso-Biguine-Merengue</span>
+      <span>Album: {{ diary.album_title }}</span>
     </div>
   </div>
+  {% else %}
+  <p class="text-center text-muted">No diary entries found.</p>
+  {% endfor %}
 </div>
 {% endblock %}
