@@ -8,7 +8,13 @@ from flask import (
     url_for,
 )
 
-from app.models import reset_database, retrieve_user_albums, retrieve_users
+from app.models import (
+    reset_database,
+    retrieve_all_artists,
+    retrieve_all_tracks,
+    retrieve_user_albums,
+    retrieve_users,
+)
 
 main_blueprint = Blueprint("main", __name__)
 api_blueprint = Blueprint("user", __name__, url_prefix="/api")
@@ -19,6 +25,9 @@ api_blueprint = Blueprint("user", __name__, url_prefix="/api")
 # ------------------#
 @main_blueprint.route("/", methods=["GET"])
 def index():
+    """
+    Render the home page with user information and list of users.
+    """
 
     # Demo purposes: set default user in session
     user_id = session.get("user_id", 1)
@@ -36,6 +45,9 @@ def index():
 
 @main_blueprint.route("/albums", methods=["GET"])
 def my_albums():
+    """
+    Retrieve albums for the logged-in user and render them on the albums page.
+    """
     user_id = session.get("user_id", 1)
     albums = retrieve_user_albums(user_id)
     return render_template("albums.html", albums=albums)
@@ -43,11 +55,17 @@ def my_albums():
 
 @main_blueprint.route("/diary", methods=["GET"])
 def my_diary():
+    """
+    Retrieve diary entries for the logged-in user and render them on the diary page.
+    """
+
     # Demo purposes: set default user in session
     user_id = session.get("user_id", 1)
 
     # TODO: Unccomment the line below to retrieve actual diary entries from the database.
     # diaries = retrieve_user_albums(user_id)
+
+    # For demo purposes, using hardcoded diary entries remove once DB retrieval is implemented.
     diaries = [
         {
             "diary_entry_id": 1,
@@ -64,6 +82,44 @@ def my_diary():
     ]
 
     return render_template("diary.html", diaries=diaries)
+
+
+@main_blueprint.route("/all_artists", methods=["GET"])
+def all_artists():
+    """
+    Retrieve all artists from the database and render them on the artists page.
+    """
+
+    # TODO: Unccomment the line below to retrieve actual artists from the database.
+    # artists = retrieve_all_artists()
+
+    # For demo purposes, using hardcoded artists entries remove once DB retrieval is implemented.
+    artists = [
+        {"artist_id": 1, "artist_name": "Taylor Swift"},
+        {"artist_id": 2, "artist_name": "Ed Sheeran"},
+        {"artist_id": 3, "artist_name": "Adele"},
+    ]
+
+    return render_template("artists.html", artists=artists)
+
+
+@main_blueprint.route("/all_tracks", methods=["GET"])
+def all_tracks():
+    """
+    Retrieve all artists from the database and render them on the artists page.
+    """
+
+    # TODO: Unccomment the line below to retrieve actual tracks from the database.
+    # tracks = retrieve_all_tracks()
+
+    # For demo purposes, using hardcoded tracks entries remove once DB retrieval is implemented.
+    tracks = [
+        {"track_id": 1, "track_title": "Track One"},
+        {"track_id": 2, "track_title": "Track Two"},
+        {"track_id": 3, "track_title": "Track Three"},
+    ]
+
+    return render_template("tracks.html", tracks=tracks)
 
 
 @main_blueprint.route("/add_diary/", methods=["GET"])

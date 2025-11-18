@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% block title %}Tracks{% endblock %} {% block content
+%}
+<div class="container py-4">
+  <h1 class="text-center mb-4">Tracks</h1>
+  <div class="row">
+    {% for track in tracks %}
+    <div class="col-md-4">
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Track ID: {{ track.track_id }}</h5>
+          <p class="card-text">Title: {{ track.track_title }}</p>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No tracks found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
