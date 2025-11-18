@@ -14,6 +14,8 @@ from app.models import (
     retrieve_all_tracks,
     retrieve_user_albums,
     retrieve_users,
+    retrieve_diaries,
+    delete_diary_entry
 )
 
 main_blueprint = Blueprint("main", __name__)
@@ -50,6 +52,7 @@ def my_albums():
     """
     user_id = session.get("user_id", 1)
     albums = retrieve_user_albums(user_id)
+
     return render_template("albums.html", albums=albums)
 
 
@@ -58,28 +61,9 @@ def my_diary():
     """
     Retrieve diary entries for the logged-in user and render them on the diary page.
     """
-
     # Demo purposes: set default user in session
     user_id = session.get("user_id", 1)
-
-    # TODO: Unccomment the line below to retrieve actual diary entries from the database.
-    # diaries = retrieve_user_albums(user_id)
-
-    # For demo purposes, using hardcoded diary entries remove once DB retrieval is implemented.
-    diaries = [
-        {
-            "diary_entry_id": 1,
-            "diary_entry_date_time": "2024-01-01 10:00:00",
-            "diary_entry": "This is a sample diary entry.",
-            "album_title": "Sample Album",
-        },
-        {
-            "diary_entry_id": 2,
-            "diary_entry_date_time": "2024-01-02 11:00:00",
-            "diary_entry": "Another diary entry example.",
-            "album_title": "Another Album",
-        },
-    ]
+    diaries = retrieve_diaries(user_id)
 
     return render_template("diary.html", diaries=diaries)
 
@@ -89,16 +73,7 @@ def all_artists():
     """
     Retrieve all artists from the database and render them on the artists page.
     """
-
-    # TODO: Unccomment the line below to retrieve actual artists from the database.
-    # artists = retrieve_all_artists()
-
-    # For demo purposes, using hardcoded artists entries remove once DB retrieval is implemented.
-    artists = [
-        {"artist_id": 1, "artist_name": "Taylor Swift"},
-        {"artist_id": 2, "artist_name": "Ed Sheeran"},
-        {"artist_id": 3, "artist_name": "Adele"},
-    ]
+    artists = retrieve_all_artists()
 
     return render_template("artists.html", artists=artists)
 
@@ -108,16 +83,7 @@ def all_tracks():
     """
     Retrieve all artists from the database and render them on the artists page.
     """
-
-    # TODO: Unccomment the line below to retrieve actual tracks from the database.
-    # tracks = retrieve_all_tracks()
-
-    # For demo purposes, using hardcoded tracks entries remove once DB retrieval is implemented.
-    tracks = [
-        {"track_id": 1, "track_title": "Track One"},
-        {"track_id": 2, "track_title": "Track Two"},
-        {"track_id": 3, "track_title": "Track Three"},
-    ]
+    tracks = retrieve_all_tracks()
 
     return render_template("tracks.html", tracks=tracks)
 
@@ -149,10 +115,14 @@ def get_all_users():
 
 @api_blueprint.route("/resetDB", methods=["GET"])
 def reset_db():
-    # TODO: uncomment the line below to enable DB reset.
-    # reset_database()
-    print("Database has been reset.")
+    reset_database()
     return redirect(url_for("main.index"))
+
+@api_blueprint.route("/delete_diary", methods=["POST"])
+def api_delete_diary_entry():
+    diary_entry_id = request.form.get("diary_entry_id")
+    delete_diary_entry(diary_entry_id)
+    return redirect(url_for("main.my_diary"))
 
 
 @api_blueprint.route("/select_user", methods=["POST"])
