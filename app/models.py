@@ -163,6 +163,25 @@ def delete_diary_entry(diary_entry_id):
         cursor.close()
         conn.close()
 
+def remove_album_from_collection(input_user_id, input_album_id):
+    """
+    Removes specified album from specified user's collection
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        sql = "CALL sp_RemoveAlbumFromCollection(%s, %s)"
+        cursor.execute(sql, [input_user_id, input_album_id])
+        conn.commit()
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
 def reset_database():
     """
     Reset the database to its initial state

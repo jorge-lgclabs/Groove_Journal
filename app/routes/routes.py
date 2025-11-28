@@ -15,7 +15,10 @@ from app.models import (
     retrieve_user_albums,
     retrieve_users,
     retrieve_diaries,
-    delete_diary_entry, retrieve_user_albums_ids, insert_diary_entry
+    delete_diary_entry,
+    retrieve_user_albums_ids,
+    insert_diary_entry,
+    remove_album_from_collection
 )
 
 main_blueprint = Blueprint("main", __name__)
@@ -142,6 +145,13 @@ def api_delete_diary_entry():
     diary_entry_id = request.form.get("diary_entry_id")
     delete_diary_entry(diary_entry_id)
     return redirect(url_for("main.my_diary"))
+
+@api_blueprint.route("/remove_album", methods=["POST"])
+def api_remove_album_from_collection():
+    user_id = session.get("user_id", 1)
+    album_id = request.form.get("album_id")
+    remove_album_from_collection(user_id, album_id)
+    return redirect(url_for("main.my_albums"))
 
 
 @api_blueprint.route("/select_user", methods=["POST"])
