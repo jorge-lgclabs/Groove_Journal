@@ -30,6 +30,7 @@ def group_albums_tracks_artists(rows):
         track_id = row["track_id"]
 
         # Album info
+
         albums[album_id].update({"album_title": row["album_title"]})
 
         # Track info
@@ -45,10 +46,11 @@ def group_albums_tracks_artists(rows):
 
     # Convert to list and sort tracks by track_order_num
     album_list = []
-    for album in albums.values():
+    for key, album in albums.items():
         track_list = list(album["tracks"].values())
         track_list.sort(key=lambda x: x["track_order_num"])  # sort by track order
         album["tracks"] = track_list
+        album["album_id"] = key
         album_list.append(album)
 
     return album_list

@@ -23,9 +23,13 @@ Add Diary Entry
     <div class="mb-4">
       <label for="album_id" class="form-label fw-bold">Select Album</label>
       <select class="form-select" id="album_id" name="album_id" required>
-        <option value="" disabled selected>Select an album</option>
+        <option value="">Select an album</option>
         {% for album in albums %}
-        <option value="{{ album.album_id }}">{{ album.album_title }}</option>
+          {% if default_album|int == album.album_id|int %}
+          <option value="{{ album.album_id }}" selected>{{ album.album_title }}</option>
+          {% else %}
+          <option value="{{ album.album_id }}">{{ album.album_title }}</option>
+          {% endif %}
         {% endfor %}
       </select>
     </div>

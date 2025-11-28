@@ -90,9 +90,12 @@ def all_tracks():
 
 @main_blueprint.route("/add_diary/", methods=["GET"])
 def add_diary():
+    default_album = request.args.get('album')
+    if not default_album:
+        default_album = 0
     user_id = session.get("user_id", 1)
     albums = retrieve_user_albums_ids(user_id)
-    return render_template("add_diary.html", albums=albums)
+    return render_template("add_diary.html", default_album=default_album, albums=albums)
 
 
 @main_blueprint.route("/edit_diary/", methods=["GET"])
