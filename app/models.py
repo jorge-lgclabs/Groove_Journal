@@ -191,6 +191,93 @@ def insert_album_to_collection(album_id, user_id):
         conn.close()
 
 
+def insert_new_album(
+    album_title,
+    album_label,
+    album_country,
+    album_year,
+):
+    """
+    Insert new album with attendant information into the DB
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        # Insert the new album
+        sql_insert_album = "CALL sp_InsertAlbum(%s, %s, %s, %s, @result)"
+        cursor.execute(
+            sql_insert_album,
+            [album_title, album_label, album_country, album_year],
+        )
+        album_id = cursor.lastrowid
+        print("New album_id:", album_id)
+        conn.commit()
+
+        return album_id
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def insert_new_track(track_title):
+    """
+    Insert new track into the DB
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        sql_insert_track = "CALL sp_InsertTrack(%s, @result)"
+        cursor.execute(
+            sql_insert_track,
+            [track_title],
+        )
+        track_id = cursor.lastrowid
+        print("New track_id:", track_id)
+        conn.commit()
+
+        return track_id
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def insert_new_artist(artist_name):
+    """
+    Insert new artist into the DB
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        sql_insert_artist = "CALL sp_InsertArtist(%s, @result)"
+        cursor.execute(
+            sql_insert_artist,
+            [artist_name],
+        )
+        artist_id = cursor.lastrowid
+        print("New artist_id:", artist_id)
+        conn.commit()
+
+        return artist_id
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
 def delete_diary_entry(diary_entry_id):
     """
     Delete diary_entry of diary_entry_id
