@@ -204,19 +204,25 @@ def insert_new_album(
     if not conn:
         return
 
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
     try:
+        args = [
+            album_title,
+            album_label,
+            album_country,
+            album_year,
+            0,  # OUT parameter placeholder
+        ]
+
         # Insert the new album
-        sql_insert_album = "CALL sp_InsertAlbum(%s, %s, %s, %s, @result)"
-        cursor.execute(
-            sql_insert_album,
-            [album_title, album_label, album_country, album_year],
-        )
-        album_id = cursor.lastrowid
-        print("New album_id:", album_id)
+        res = cursor.callproc("sp_InsertAlbum", args)
+        if res is None:
+            raise Exception("Failed to insert new album")
         conn.commit()
+        album_id = res[-1]  # Get the OUT parameter (new album_id)
 
         return album_id
+
     except Exception as e:
         raise e
     finally:
@@ -234,13 +240,15 @@ def insert_new_track(track_title):
 
     cursor = conn.cursor(dictionary=True)
     try:
-        sql_insert_track = "CALL sp_InsertTrack(%s, @result)"
-        cursor.execute(
-            sql_insert_track,
-            [track_title],
-        )
-        track_id = cursor.lastrowid
-        print("New track_id:", track_id)
+        args = [
+            track_title,
+            0,  # OUT parameter placeholder
+        ]
+        # Insert the new track
+        res = cursor.callproc("sp_InsertTrack", args)
+        if res is None:
+            raise Exception("Failed to insert new track")
+        track_id = res[-1]  # Get the OUT parameter (new track_id)
         conn.commit()
 
         return track_id
@@ -261,13 +269,15 @@ def insert_new_artist(artist_name):
 
     cursor = conn.cursor(dictionary=True)
     try:
-        sql_insert_artist = "CALL sp_InsertArtist(%s, @result)"
-        cursor.execute(
-            sql_insert_artist,
-            [artist_name],
-        )
-        artist_id = cursor.lastrowid
-        print("New artist_id:", artist_id)
+        args = [
+            artist_name,
+            0,  # OUT parameter placeholder
+        ]
+        # Insert the new artist
+        res = cursor.callproc("sp_InsertArtist", args)
+        if res is None:
+            raise Exception("Failed to insert new artist")
+        artist_id = res[-1]  # Get the OUT parameter (new artist_id)
         conn.commit()
 
         return artist_id

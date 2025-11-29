@@ -1,6 +1,7 @@
 import unittest
 
 from app import create_app
+from app.models import insert_new_album
 from app.services.db_connection import get_connection
 
 
@@ -37,19 +38,12 @@ class TestInsertAlbumProcedure(unittest.TestCase):
         album_entry_country = "Test Country"
         album_entry_year = 2023
 
-        result = 0
-
-        args = [
+        result = insert_new_album(
             album_entry_title,
             album_entry_label,
             album_entry_country,
             album_entry_year,
-            0,
-        ]
-
-        returned_args = self.cursor.callproc("sp_InsertAlbum", args)
-
-        result = returned_args[-1]  # The OUT parameter is updated in the args list
+        )
 
         # Verify the result
         self.assertIsNotNone(result, "The procedure did not return an album ID.")
