@@ -288,6 +288,81 @@ def insert_new_artist(artist_name):
         conn.close()
 
 
+def add_track_to_album(album_id, track_id):
+    """
+    Add track to album in the DB
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        args = [album_id, track_id]
+        cursor.callproc("sp_AddTrackToAlbum", args)
+
+        conn.commit()
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def add_artist_to_track(artist_id, track_id):
+    """
+    Add artist to track in the DB
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        args = [artist_id, track_id]
+        cursor.callproc("sp_AddArtistToTrack", args)
+
+        conn.commit()
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def add_artist_to_album(artist_id, album_id):
+    """
+    Add artist to album in the DB
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        args = [artist_id, album_id]
+        cursor.callproc("sp_AddArtistToAlbum", args)
+
+        conn.commit()
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def stitch_artist_track_album_by_ids(artist_id, track_id, album_id):
+    """
+    Stitch artist, track, and album together in the DB
+    """
+    try:
+        add_artist_to_track(artist_id, track_id)
+        add_track_to_album(album_id, track_id)
+        add_artist_to_album(artist_id, album_id)
+    except Exception as e:
+        raise e
+
+
 def delete_diary_entry(diary_entry_id):
     """
     Delete diary_entry of diary_entry_id
