@@ -24,6 +24,22 @@ END //
 DELIMITER ;
 
 /*
+stored procedure to insert album into Albums_have_Owners
+*/
+DROP procedure IF EXISTS sp_InsertAlbumsHaveOwners;
+
+DELIMITER //
+CREATE PROCEDURE `sp_InsertAlbumsHaveOwners` (IN album_entry_id INT, user_entry_id INT)
+BEGIN
+    INSERT INTO Albums_have_Owners (album_id, user_id)
+    VALUES (
+        album_entry_id,
+        user_entry_id
+        );      
+END//
+DELIMITER ;
+
+/*
 stored procedure to remove an album from a users collection
 */
 DELIMITER //
@@ -143,6 +159,20 @@ BEGIN
 END //
 DELIMITER ;
 
+/*
+stored procedure to get all albums by Jorge Rodriguez and Antonio Olaguer II
+*/
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS sp_GetAllAlbums;
+
+CREATE PROCEDURE sp_GetAllAlbums()
+BEGIN
+    SELECT a.album_id, a.album_title
+    FROM Albums a;
+END //
+
+DELIMITER ;
 
 /*
 stored procedure to get diary_entries of specified user by Jorge Rodriguez and Antonio Olaguer II

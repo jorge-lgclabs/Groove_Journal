@@ -1,5 +1,6 @@
 from flask import (
     Blueprint,
+    flash,
     jsonify,
     redirect,
     render_template,
@@ -9,16 +10,18 @@ from flask import (
 )
 
 from app.models import (
+    delete_diary_entry,
+    insert_album_to_collection,
+    insert_diary_entry,
+    remove_album_from_collection,
     reset_database,
+    retrieve_all_albums,
     retrieve_all_artists,
     retrieve_all_tracks,
-    retrieve_user_albums,
-    retrieve_users,
     retrieve_diaries,
-    delete_diary_entry,
+    retrieve_user_albums,
     retrieve_user_albums_ids,
-    insert_diary_entry,
-    remove_album_from_collection
+    retrieve_users,
 )
 
 main_blueprint = Blueprint("main", __name__)
@@ -93,7 +96,7 @@ def all_tracks():
 
 @main_blueprint.route("/add_diary/", methods=["GET"])
 def add_diary():
-    default_album = request.args.get('album')
+    default_album = request.args.get("album")
     if not default_album:
         default_album = 0
     user_id = session.get("user_id", 1)
@@ -109,7 +112,9 @@ def edit_diary():
 
 @main_blueprint.route("/add_album/", methods=["GET"])
 def add_album():
-    return render_template("add_album.html")
+    albums = retrieve_all_albums()
+    print(albums)
+    return render_template("add_album.html", albums=albums)
 
 
 # ------------------#
@@ -125,6 +130,7 @@ def reset_db():
     reset_database()
     return redirect(url_for("main.index"))
 
+
 @api_blueprint.route("/add_diary_entry", methods=["POST"])
 def api_add_diary_entry():
     author_user_id = session.get("user_id", 1)
@@ -134,17 +140,19 @@ def api_add_diary_entry():
 
     datetime = datetime.replace("T", " ")
 
-    #print(f"{author_user_id}\n{album_id}\n{datetime}\n{content}")
+    # print(f"{author_user_id}\n{album_id}\n{datetime}\n{content}")
 
     insert_diary_entry(author_user_id, album_id, datetime, content)
 
     return redirect(url_for("main.my_diary"))
+
 
 @api_blueprint.route("/delete_diary", methods=["POST"])
 def api_delete_diary_entry():
     diary_entry_id = request.form.get("diary_entry_id")
     delete_diary_entry(diary_entry_id)
     return redirect(url_for("main.my_diary"))
+
 
 @api_blueprint.route("/remove_album", methods=["POST"])
 def api_remove_album_from_collection():
@@ -166,3 +174,22 @@ def select_user():
         session["user_lname"] = user_lname
 
     return redirect(url_for("main.index"))
+
+
+@api_blueprint.route("/add_existing_album", methods=["POST"])
+def api_add_existing_album():
+    user_id = session.get("user_id", 1)
+    existing_album_id = request.form.get("existing_album")
+    try:
+        insert_album_to_collection(existing_album_id, user_id)
+    except Exception as e:
+        if "Duplicate entry" in str(e):
+            flash(
+                "Duplicate entry detected. This album already exists for the owner.",
+                "warning",
+            )
+        else:
+            flash("An error occurred while adding the album.", "danger")
+        return redirect(url_for("main.my_albums"))
+
+    return redirect(url_for("main.my_albums"))

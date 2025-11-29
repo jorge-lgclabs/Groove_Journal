@@ -1,0 +1,17 @@
+/* CSS for auto-dismissing alerts */
+.auto-dismiss {
+  animation: fadeOut 5s forwards; /* 3 seconds fade-out animation */
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
