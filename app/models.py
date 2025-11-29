@@ -36,6 +36,22 @@ def retrieve_user_albums(user_id):
 
     return formatted_result
 
+def retrieve_user_albums_ids(user_id):
+    """
+    Retrieve album_id and album_title of user_id Albums owned
+    """
+    conn = get_connection()
+    if not conn:
+        return []
+
+    sql = 'CALL sp_GetUserJustAlbums(%s)'
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(sql, [user_id])
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return result
 
 def retrieve_diaries(user_id):
     """
@@ -108,6 +124,26 @@ def retrieve_all_artists():
         cursor.close()
         conn.close()
 
+def insert_diary_entry(author_id, album_id, entry_date, entry_content ):
+    """
+    Insert new diary_entry for author_id pertaining to album_id and attendant information
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        sql = "CALL sp_InsertDiaryEntry(%s, %s, %s, %s)"
+        cursor.execute(sql, [entry_content, entry_date, author_id, album_id])
+        conn.commit()
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
 def delete_diary_entry(diary_entry_id):
     """
     Delete diary_entry of diary_entry_id
@@ -120,6 +156,25 @@ def delete_diary_entry(diary_entry_id):
     try:
         sql = "CALL sp_DeleteDiaryEntry(%s)"
         cursor.execute(sql, [diary_entry_id])
+        conn.commit()
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+def remove_album_from_collection(input_user_id, input_album_id):
+    """
+    Removes specified album from specified user's collection
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        sql = "CALL sp_RemoveAlbumFromCollection(%s, %s)"
+        cursor.execute(sql, [input_user_id, input_album_id])
         conn.commit()
     except Exception as e:
         raise e

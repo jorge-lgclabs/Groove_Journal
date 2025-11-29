@@ -61,8 +61,12 @@
             {% endfor %}
           </ol>
           <div class="d-flex justify-content-between">
+            <a href="/add_diary/?album={{ album.album_id }}">
             <button aria-label="Add Diary" class="btn btn-outline-dark btn-hollow ms-2"><i class="bi bi-journal-plus"></i> Add Diary Entry</button>
-            <button aria-label="Delete" class="btn btn-outline-danger ms-2">Remove from Collection</button>
+            </a>
+            <form action="/api/remove_album" onsubmit="return confirm('Are you sure you want to remove this album from your collection?');" method="POST">
+            <input type="hidden" name="album_id" value="{{ album.album_id }}">
+              <button type="submit" aria-label="Delete" class="btn btn-outline-danger ms-2">Remove from Collection</button></form>
           </div>
         </div> <!-- End accordion-body -->
         
