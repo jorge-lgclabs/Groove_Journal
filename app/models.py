@@ -278,9 +278,9 @@ def insert_new_artist(artist_name):
             0,  # OUT parameter placeholder
         ]
         # Insert the new artist
-        print(f"args: {args}")
+        # print(f"args: {args}")
         res = cursor.callproc("sp_InsertArtist", args)
-        print(f"res: {res}")
+        # print(f"res: {res}")
         if res is None:
             raise Exception("Failed to insert new artist")
         artist_id = res[-1]  # Get the OUT parameter (new artist_id)
