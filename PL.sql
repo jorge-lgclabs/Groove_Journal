@@ -87,12 +87,24 @@ CREATE PROCEDURE `sp_InsertTrack` (
     IN track_entry_title VARCHAR(255),
     OUT result INT
 )
-BEGIN
+proc: BEGIN
+    DECLARE existing_id INT DEFAULT NULL;
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         SET result = -99;
         ROLLBACK;
     END;
+
+   -- Check if track_title already exists
+    SELECT track_id INTO existing_id
+    FROM Tracks
+    WHERE track_title = track_entry_title
+    LIMIT 1;
+
+    IF existing_id IS NOT NULL THEN
+        SET result = existing_id;
+        LEAVE proc;
+    END IF;
 
     START TRANSACTION;
 
@@ -102,7 +114,7 @@ BEGIN
     SET result = LAST_INSERT_ID();
 
     COMMIT;
-END //
+END proc //
 
 DELIMITER ;
 
@@ -126,30 +138,44 @@ DELIMITER ;
 stored procedure to insert artist into Artists
 */
 
-DROP procedure IF EXISTS `sp_insertArtist`;
+DROP PROCEDURE IF EXISTS `sp_insertArtist`;
 
 DELIMITER //
 CREATE PROCEDURE `sp_insertArtist` (
-	IN artist_entry_name VARCHAR(255),
+    IN artist_entry_name VARCHAR(255),
     OUT result INT
-    )
-BEGIN
+)
+proc: BEGIN
+    DECLARE existing_id INT DEFAULT NULL;
+
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         SET result = -99;
         ROLLBACK;
     END;
 
+    -- Check if artist already exists
+    SELECT artist_id INTO existing_id
+    FROM Artists
+    WHERE artist_name = artist_entry_name
+    LIMIT 1;
+
+    IF existing_id IS NOT NULL THEN
+        SET result = existing_id;
+        LEAVE proc; 
+    END IF;
+
     START TRANSACTION;
 
-    -- Insert the track
+    -- Insert new artist
     INSERT INTO Artists (artist_name)
     VALUES (artist_entry_name);
+
     SET result = LAST_INSERT_ID();
 
     COMMIT;
-END //
 
+END proc //
 DELIMITER ;
 
 /*
@@ -181,16 +207,16 @@ DROP procedure IF EXISTS `sp_InsertAlbumsHaveArtists`;
 
 DELIMITER //
 CREATE PROCEDURE `sp_InsertAlbumsHaveArtists`(
-                IN album_entry_id INT,
-				IN artist_entry_id INT
-                )
+                    IN album_entry_id INT,
+                    IN artist_entry_id INT
+                            )
                 
 BEGIN
-	INSERT INTO Artists_have_Tracks (album_id, artist_id)
+	INSERT INTO Albums_have_Artists (album_id, artist_id)
 		VALUES (
 			album_entry_id,
-			track_entry_id
-            );
+      artist_entry_id
+    );
             
 END //
 

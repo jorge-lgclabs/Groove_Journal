@@ -15,3 +15,8 @@
     visibility: hidden;
   }
 }
+
+.dropdown-toggle {
+  display: block !important;
+  width: 100% !important;
+}

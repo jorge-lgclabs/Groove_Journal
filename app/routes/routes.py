@@ -10,9 +10,15 @@ from flask import (
 )
 
 from app.models import (
+    add_artist_to_album,
+    add_artist_to_track,
+    add_track_to_album,
     delete_diary_entry,
     insert_album_to_collection,
     insert_diary_entry,
+    insert_new_album,
+    insert_new_artist,
+    insert_new_track,
     remove_album_from_collection,
     reset_database,
     retrieve_all_albums,
@@ -23,6 +29,7 @@ from app.models import (
     retrieve_user_albums_ids,
     retrieve_users,
 )
+from app.services.utils import extract_tracks, handle_errors
 
 main_blueprint = Blueprint("main", __name__)
 api_blueprint = Blueprint("user", __name__, url_prefix="/api")
@@ -113,8 +120,11 @@ def edit_diary():
 @main_blueprint.route("/add_album/", methods=["GET"])
 def add_album():
     albums = retrieve_all_albums()
-    print(albums)
-    return render_template("add_album.html", albums=albums)
+    artists = retrieve_all_artists()
+    tracks = retrieve_all_tracks()
+    return render_template(
+        "add_album.html", albums=albums, artists=artists, tracks=tracks
+    )
 
 
 # ------------------#
@@ -183,13 +193,62 @@ def api_add_existing_album():
     try:
         insert_album_to_collection(existing_album_id, user_id)
     except Exception as e:
-        if "Duplicate entry" in str(e):
-            flash(
-                "Duplicate entry detected. This album already exists for the owner.",
-                "warning",
-            )
-        else:
-            flash("An error occurred while adding the album.", "danger")
+        handle_errors(e)
+        return redirect(url_for("main.my_albums"))
+
+    return redirect(url_for("main.my_albums"))
+
+
+@api_blueprint.route("/add_new_album", methods=["POST"])
+def api_add_new_album():
+    user_id = session.get("user_id", 1)
+    album_title = request.form.get("album_title")
+    album_label = request.form.get("album_label")
+    album_country = request.form.get("album_country")
+    album_year = request.form.get("album_year")
+    tracks = extract_tracks(request.form)  # Utility function to parse track data
+
+    print(f"Tracks: {tracks}")
+
+    try:
+        # Insert new album
+        new_album_id = insert_new_album(
+            album_title,
+            album_label,
+            album_country,
+            album_year,
+        )
+        # Add album to user's collection
+        insert_album_to_collection(new_album_id, user_id)
+
+        # Insert tracks and link artists
+        for index, track in enumerate(tracks):
+            track_name = track.get("track_name")
+            existing_artists = track.get("existing_artists", [])
+            new_artists = track.get("new_artists", [])
+
+            if not track_name:
+                continue
+
+            # Insert new track
+            track_id = insert_new_track(track_name)
+            add_track_to_album(track_id, new_album_id, index + 1)
+
+            if existing_artists:
+                # Link existing artists to track and album
+                for artist_id in existing_artists:
+                    add_artist_to_track(artist_id, track_id)
+                    add_artist_to_album(artist_id, new_album_id)
+
+            if new_artists:
+                # Create new artists and link to track
+                for artist_name in new_artists:
+                    artist_id = insert_new_artist(artist_name)
+                    add_artist_to_track(artist_id, track_id)
+                    add_artist_to_album(artist_id, new_album_id)
+
+    except Exception as e:
+        handle_errors(e)
         return redirect(url_for("main.my_albums"))
 
     return redirect(url_for("main.my_albums"))
