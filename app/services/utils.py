@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from flask import flash
+
 
 def group_albums_tracks_artists(rows):
     """
@@ -54,3 +56,50 @@ def group_albums_tracks_artists(rows):
         album_list.append(album)
 
     return album_list
+
+
+def handle_errors(e):
+    """
+    A generic error handler that can be expanded for different error types.
+    """
+    if "Duplicate entry" in str(e):
+        flash("Duplicate entry error: The record already exists.", "warning")
+    else:
+        flash(f"An unexpected error occurred: {str(e)}", "error")
+
+
+def extract_tracks(form_data):
+    """
+    Extracts track information from the form data.
+    Args: form_data (ImmutableMultiDict): The form data from the request.
+    Returns: list: A list of dictionaries representing tracks and their associated artists.
+    """
+    tracks = {}
+
+    for key, value in form_data.items():
+        if key.startswith("tracks"):
+            # Parse the key to extract the index and field name
+            parts = key.split("[")
+            index = int(parts[1][:-1])  # Extract the index (e.g., 0, 1)
+            field = (
+                parts[2][:-1] if len(parts) > 2 else None
+            )  # Extract the field name (e.g., track_name, existing_artists)
+
+            # Initialize the track dictionary if it doesn't exist
+            if index not in tracks:
+                tracks[index] = {}
+
+            # Handle multiple values for existing_artists[]
+            if field == "existing_artists":
+                tracks[index].setdefault(field, []).append(value)
+            if field == "track_name":
+                tracks[index][field] = value
+            else:
+                new_artist_list = [artist.strip() for artist in value.split(",")]
+                if new_artist_list == [""]:
+                    continue
+                tracks[index][field] = new_artist_list
+
+    # Convert the tracks dictionary to a list
+    tracks_list = [tracks[i] for i in tracks]
+    return tracks_list

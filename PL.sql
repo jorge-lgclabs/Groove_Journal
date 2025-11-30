@@ -39,6 +39,189 @@ BEGIN
 END//
 DELIMITER ;
 
+
+/*
+stored procedure to insert album into Albums
+*/
+
+DROP procedure IF EXISTS `sp_InsertAlbum`;
+
+DELIMITER //
+CREATE PROCEDURE `sp_InsertAlbum` (
+    IN album_entry_title VARCHAR(255), 
+    IN album_entry_label VARCHAR(255), 
+    IN album_entry_country VARCHAR(255), 
+    IN album_entry_year INT,
+    OUT result INT
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+        SET result = -99;
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+    -- Insert into Albums
+    INSERT INTO Albums (album_title, album_label, album_country, album_year)
+    VALUES (
+        album_entry_title,
+        album_entry_label,
+        album_entry_country,
+        album_entry_year
+    );
+    SET result = LAST_INSERT_ID();
+
+    COMMIT;
+END //
+
+DELIMITER ;
+
+/*
+stored procedure to insert track into Tracks
+*/
+DROP procedure IF EXISTS `sp_InsertTrack`;
+
+DELIMITER //
+CREATE PROCEDURE `sp_InsertTrack` (
+    IN track_entry_title VARCHAR(255),
+    OUT result INT
+)
+proc: BEGIN
+    DECLARE existing_id INT DEFAULT NULL;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SET result = -99;
+        ROLLBACK;
+    END;
+
+   -- Check if track_title already exists
+    SELECT track_id INTO existing_id
+    FROM Tracks
+    WHERE track_title = track_entry_title
+    LIMIT 1;
+
+    IF existing_id IS NOT NULL THEN
+        SET result = existing_id;
+        LEAVE proc;
+    END IF;
+
+    START TRANSACTION;
+
+    -- Insert the track
+    INSERT INTO Tracks (track_title)
+    VALUES (track_entry_title);
+    SET result = LAST_INSERT_ID();
+
+    COMMIT;
+END proc //
+
+DELIMITER ;
+
+/*
+stored procedure to insert track into Albums_Have_Tracks
+*/
+DELIMITER //
+CREATE PROCEDURE `sp_InsertAlbumsHaveTracks` (IN track_entry_id INT, album_entry_id INT, track_entry_order_num INT)
+BEGIN
+	INSERT INTO Albums_Have_Tracks (track_id, album_id, track_order_num)
+		VALUES (
+			track_entry_id,
+            album_entry_id,
+            track_entry_order_num
+            );
+END //
+
+DELIMITER ;
+
+/*
+stored procedure to insert artist into Artists
+*/
+
+DROP PROCEDURE IF EXISTS `sp_insertArtist`;
+
+DELIMITER //
+CREATE PROCEDURE `sp_insertArtist` (
+    IN artist_entry_name VARCHAR(255),
+    OUT result INT
+)
+proc: BEGIN
+    DECLARE existing_id INT DEFAULT NULL;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SET result = -99;
+        ROLLBACK;
+    END;
+
+    -- Check if artist already exists
+    SELECT artist_id INTO existing_id
+    FROM Artists
+    WHERE artist_name = artist_entry_name
+    LIMIT 1;
+
+    IF existing_id IS NOT NULL THEN
+        SET result = existing_id;
+        LEAVE proc; 
+    END IF;
+
+    START TRANSACTION;
+
+    -- Insert new artist
+    INSERT INTO Artists (artist_name)
+    VALUES (artist_entry_name);
+
+    SET result = LAST_INSERT_ID();
+
+    COMMIT;
+
+END proc //
+DELIMITER ;
+
+/*
+stored procedure to insert artist into Artists_Have_Tracks
+*/
+DROP procedure IF EXISTS `sp_InsertArtistsHaveTracks`;
+
+DELIMITER //
+CREATE PROCEDURE `sp_InsertArtistsHaveTracks`(
+				IN artist_entry_id INT, 
+                IN track_entry_id INT
+                )
+                
+BEGIN
+	INSERT INTO Artists_have_Tracks (artist_id, track_id)
+		VALUES (
+			artist_entry_id,
+			track_entry_id
+            );
+            
+END //
+
+DELIMITER ;
+
+/*
+stored procedure to insert artist into Albums_Have_Artists
+*/
+DROP procedure IF EXISTS `sp_InsertAlbumsHaveArtists`;
+
+DELIMITER //
+CREATE PROCEDURE `sp_InsertAlbumsHaveArtists`(
+                    IN album_entry_id INT,
+                    IN artist_entry_id INT
+                            )
+                
+BEGIN
+	INSERT INTO Albums_have_Artists (album_id, artist_id)
+		VALUES (
+			album_entry_id,
+      artist_entry_id
+    );
+            
+END //
+
+DELIMITER ;
+
 /*
 stored procedure to remove an album from a users collection
 */

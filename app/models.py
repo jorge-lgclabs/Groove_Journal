@@ -181,8 +181,174 @@ def insert_album_to_collection(album_id, user_id):
 
     cursor = conn.cursor(dictionary=True)
     try:
-        sql = "CALL sp_InsertAlbumsHaveOwners(%s, %s)"
-        cursor.execute(sql, [album_id, user_id])
+        args = [album_id, user_id]
+        res = cursor.callproc("sp_InsertAlbumsHaveOwners", args)
+        if res is None:
+            raise Exception("Failed to insert album to collection")
+        conn.commit()
+        return res
+
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def insert_new_album(
+    album_title,
+    album_label,
+    album_country,
+    album_year,
+):
+    """
+    Insert new album with attendant information into the DB
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor()
+    try:
+        args = [
+            album_title,
+            album_label,
+            album_country,
+            album_year,
+            0,  # OUT parameter placeholder
+        ]
+
+        # Insert the new album
+        res = cursor.callproc("sp_InsertAlbum", args)
+        if res is None:
+            raise Exception("Failed to insert new album")
+        conn.commit()
+        album_id = res[-1]  # Get the OUT parameter (new album_id)
+
+        return album_id
+
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def insert_new_track(track_title):
+    """
+    Insert new track into the DB
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor()
+    try:
+        args = [
+            track_title,
+            0,  # OUT parameter placeholder
+        ]
+        # Insert the new track
+        res = cursor.callproc("sp_InsertTrack", args)
+        if res is None:
+            raise Exception("Failed to insert new track")
+        track_id = res[-1]  # Get the OUT parameter (new track_id)
+        conn.commit()
+
+        return track_id
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def insert_new_artist(artist_name):
+    """
+    Insert new artist into the DB
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor()
+    try:
+        args = [
+            artist_name,
+            0,  # OUT parameter placeholder
+        ]
+        # Insert the new artist
+        print(f"args: {args}")
+        res = cursor.callproc("sp_InsertArtist", args)
+        print(f"res: {res}")
+        if res is None:
+            raise Exception("Failed to insert new artist")
+        artist_id = res[-1]  # Get the OUT parameter (new artist_id)
+        conn.commit()
+
+        return artist_id
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def add_track_to_album(track_id, album_id, order_num):
+    """
+    Add track to album in the DB
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor()
+    try:
+        args = [track_id, album_id, order_num]
+        cursor.callproc("sp_InsertAlbumsHaveTracks", args)
+
+        conn.commit()
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def add_artist_to_track(artist_id, track_id):
+    """
+    Add artist to track in the DB
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor()
+    try:
+        args = [artist_id, track_id]
+        cursor.callproc("sp_InsertArtistsHaveTracks", args)
+
+        conn.commit()
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def add_artist_to_album(artist_id, album_id):
+    """
+    Add artist to album in the DB
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor()
+    try:
+        args = [album_id, artist_id]
+        cursor.callproc("sp_InsertAlbumsHaveArtists", args)
+
         conn.commit()
     except Exception as e:
         raise e
@@ -199,7 +365,7 @@ def delete_diary_entry(diary_entry_id):
     if not conn:
         return
 
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
     try:
         sql = "CALL sp_DeleteDiaryEntry(%s)"
         cursor.execute(sql, [diary_entry_id])

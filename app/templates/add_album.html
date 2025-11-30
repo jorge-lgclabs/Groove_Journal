@@ -43,133 +43,246 @@
   <!-- Divider -->
   <hr class="my-4" style="border-top: 2px solid #ffd700;">
 
-  <form action="#" method="POST">
-    <!-- Collapsible Add New Album Section -->
-    <button
-      class="btn btn-outline-dark mb-4"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#new-album-form"
-      aria-expanded="false"
-      aria-controls="new-album-form"
-    >
-      <i class="bi bi-plus me-2"></i> Cant find your album? Add a new one.
-    </button>
+  <!-- Album Form -->
+  <form id="album-form" action="{{ url_for('user.api_add_new_album') }}" method="POST">
 
-    <div class="collapse" id="new-album-form">
-      <div class="mb-4">
-        <label for="album_name" class="form-label fw-bold">Album Name</label>
-        <input
-          type="text"
-          class="form-control"
-          id="album_name"
-          name="album_name"
-          placeholder="Enter album name"
-          required
-        />
-      </div>
+    <!-- Album Details -->
+    <div class="mb-4">
+      <label for="album_title" class="form-label fw-bold">Album Title</label>
+      <input
+        type="text"
+        class="form-control"
+        id="album_title"
+        name="album_title"
+        placeholder="Enter album title"
+        required
+      />
+    </div>
 
-      <div class="mb-4">
-        <label for="release_year" class="form-label fw-bold">Release Year</label>
-        <input
-          type="number"
-          class="form-control"
-          id="release_year"
-          name="release_year"
-          placeholder="2025"
-          required
-        />
-      </div>
+    <div class="mb-4">
+      <label for="album_label" class="form-label fw-bold">Album label</label>
+      <input
+        type="text"
+        class="form-control"
+        id="album_label"
+        name="album_label"
+        placeholder="Enter album label"
+        required
+      />
+    </div>
+    <div class="mb-4">
+      <label for="album_country" class="form-label fw-bold">Album Country</label>
+      <input
+        type="text"
+        class="form-control"
+        id="album_country"
+        name="album_country"
+        placeholder="Enter album country"
+        required
+      />
+    </div>
+    <div class="mb-4">
+      <label for="album_year" class="form-label fw-bold">Release Year</label>
+      <input
+        type="number"
+        class="form-control"
+        id="album_year"
+        name="album_year"
+        placeholder="2025"
+        required
+      />
+    </div>
 
-      <div class="mb-4">
-        <label for="album_label" class="form-label fw-bold">Label</label>
-        <input
-          type="text"
-          class="form-control"
-          id="album_label"
-          name="album_label"
-          placeholder="Record label"
-        />
-      </div>
+    <!-- Tracks Section -->
+    <h4 class="fw-bold mt-5 mb-3">Tracks</h4>
 
-      <div class="mb-4">
-        <label for="album_country" class="form-label fw-bold">Country</label>
-        <input
-          type="text"
-          class="form-control"
-          id="album_country"
-          name="album_country"
-          placeholder="Country of release"
-        />
-      </div>
-
-      <!-- Tracks Section -->
-      <h4 class="fw-bold mt-5 mb-3">Tracks</h4>
-
-      <div id="tracks-container">
-        <div class="row mb-3 track-row">
-          <div class="col-md-6">
+    <div id="tracks-container">
+      <div class="track-entry mb-3">
+        <div class="row">
+          <div class="col-md-3">
             <input
               type="text"
               class="form-control"
-              name="track_name[]"
+              name="tracks[0][track_name]"
               placeholder="Track Name"
+              list="track-list"
               required
             />
+            <datalist id="track-list">
+              {% for track in tracks %}
+                <option value="{{ track.track_title }}"></option>
+              {% endfor %}
+            </datalist>
+          </div>
+          <div class="col-md-3">
+            <div class="dropdown">
+              <button
+                class="btn btn-outline-secondary dropdown-toggle d-block"
+                type="button"
+                id="dropdownMenuButton"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Select Existing Artists
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="max-height: 200px; overflow-y: auto;">
+                {% for artist in artists %}
+                  <li>
+                    <label class="dropdown-item">
+                      <input
+                        type="checkbox"
+                        name="tracks[0][existing_artists][]"
+                        value="{{ artist.artist_id }}"
+                      />
+                      {{ artist.artist_name }}
+                    </label>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
           </div>
           <div class="col-md-6">
             <input
               type="text"
               class="form-control"
-              name="track_artist[]"
-              placeholder="Artist"
-              required
+              name="tracks[0][new_artists]"
+              placeholder="Add New Artists (comma-separated)"
             />
           </div>
         </div>
       </div>
-
-      <!-- Add Track Button -->
-      <button type="button" class="btn btn-outline-dark mb-4" id="add-track-btn">
-        <i class="bi bi-plus me-2"></i> Add Track
-      </button>
-
-      <!-- Submit -->
-      <button
-        type="submit"
-        class="btn w-100"
-        style="
-          background-color: #ffd700;
-          color: #000;
-          border-radius: 0;
-          border: 2px solid #ffd700;
-        "
-      >
-        <i class="bi bi-record-circle me-2"></i> Add Album
-      </button>
     </div>
 
+    <!-- Add Track Button -->
+    <button type="button" class="btn btn-outline-dark mb-4" id="add-track-btn">
+      <i class="bi bi-plus me-2"></i> Add Track
+    </button>
 
+    <!-- Submit -->
+    <button
+      type="submit"
+      class="btn w-100"
+      style="
+        background-color: #ffd700;
+        color: #000;
+        border-radius: 0;
+        border: 2px solid #ffd700;
+      "
+    >
+      <i class="bi bi-record-circle me-2"></i> Add Album
+    </button>
   </form>
 </div>
 
-<!-- Script for adding tracks -->
+<!-- Script for dynamically adding tracks -->
 <script>
-  const addTrackBtn = document.getElementById("add-track-btn");
-  const tracksContainer = document.getElementById("tracks-container");
+  document.addEventListener("DOMContentLoaded", function () {
+    const addTrackBtn = document.getElementById("add-track-btn");
+    const tracksContainer = document.getElementById("tracks-container");
+    let trackIndex = 1; // Start from 1 since the first track is already in the form
 
-  addTrackBtn.addEventListener("click", () => {
-    const newTrack = document.createElement("div");
-    newTrack.classList.add("row", "mb-3", "track-row");
-    newTrack.innerHTML = `
-      <div class="col-md-6">
-        <input type="text" class="form-control" name="track_name[]" placeholder="Track Name" required>
-      </div>
-      <div class="col-md-6">
-        <input type="text" class="form-control" name="track_artist[]" placeholder="Artist" required>
-      </div>
-    `;
-    tracksContainer.appendChild(newTrack);
+    addTrackBtn.addEventListener("click", () => {
+      const trackEntry = document.createElement("div");
+      trackEntry.classList.add("track-entry", "mb-3");
+      trackEntry.innerHTML = `
+        <div class="row">
+          <div class="col-md-3">
+            <input
+              type="text"
+              class="form-control"
+              name="tracks[${trackIndex}][track_name]"
+              placeholder="Track Name"
+              list="track-list"
+              required
+            />
+            <datalist id="track-list">
+              {% for track in tracks %}
+                <option value="{{ track.track_title }}"></option>
+              {% endfor %}
+            </datalist>
+          </div>
+          <div class="col-md-3">
+            <div class="dropdown">
+              <button
+                class="btn btn-outline-secondary dropdown-toggle d-block"
+                type="button"
+                id="dropdownMenuButton"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Select Existing Artists
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="max-height: 200px; overflow-y: auto;">
+                {% for artist in artists %}
+                  <li>
+                    <label class="dropdown-item">
+                      <input
+                        type="checkbox"
+                        name="tracks[${trackIndex}][existing_artists][]"
+                        value="{{ artist.artist_id }}"
+                      />
+                      {{ artist.artist_name }}
+                    </label>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        <div class="col-md-6">
+            <input
+              type="text"
+              class="form-control"
+              name="tracks[${trackIndex}][new_artists]"
+              placeholder="Add New Artists (comma-separated)"
+            />
+          </div>
+
+        </div>
+      `;
+      tracksContainer.appendChild(trackEntry);
+      trackIndex++;
+    });
   });
 </script>
+
+<!-- Script to artist entry input based on datalist selection -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  // Show/hide artist fields inside a track row
+  function toggleInputs(row, hide) {
+    const dropdownWrapper = row.querySelector('.dropdown').closest('.col-md-2');
+    const newArtistsCol = row.querySelector('input[name*="[new_artists]"]').closest('.col-md-4');
+
+    if (hide) {
+      dropdownWrapper.style.display = "none";
+      newArtistsCol.style.display = "none";
+    } else {
+      dropdownWrapper.style.display = "";
+      newArtistsCol.style.display = "";
+    }
+  }
+
+  // Listen for typing in any track name input
+  document.addEventListener("input", function (event) {
+
+    if (event.target.matches('input[name*="[track_name]"]')) {
+
+      const row = event.target.closest('.track-entry');
+      const value = event.target.value;
+      const datalist = document.getElementById("track-list");
+
+      // Check if the value matches an existing track from the datalist
+      const isDatalistOption = Array.from(datalist.options).some(
+        option => option.value === value
+      );
+
+      // Hide or show artist fields
+      toggleInputs(row, isDatalistOption);
+    }
+  });
+
+});
+</script>
+
 {% endblock %}
