@@ -124,7 +124,7 @@ stored procedure to insert track into Albums_Have_Tracks
 DELIMITER //
 CREATE PROCEDURE `sp_InsertAlbumsHaveTracks` (IN track_entry_id INT, album_entry_id INT, track_entry_order_num INT)
 BEGIN
-	INSERT INTO Albums_Have_Tracks (track_id, album_id, track_order_num)
+	INSERT INTO Albums_have_Tracks (track_id, album_id, track_order_num)
 		VALUES (
 			track_entry_id,
             album_entry_id,
