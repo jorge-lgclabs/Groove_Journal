@@ -5,7 +5,6 @@ CS340 Fall 2025
 Members:
 Jorge Rodriguez
 Antonio Olaguer II
-Date: June 10, 2024
 Description: This file contains all the stored procedures for the Groove Journal project.
 Citations: 
 - Initial database schema creation and reset procedure inspired by CS340 course materials.
