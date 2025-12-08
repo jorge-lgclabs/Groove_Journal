@@ -391,6 +391,50 @@ END //
 DELIMITER ;
 
 /*
+stored procedure to retrieve specific diary entry from user by entry_id
+*/
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS sp_GetUserEntry;
+
+
+CREATE PROCEDURE sp_GetUserEntry(IN input_id INT, IN entry_id INT)
+BEGIN
+    SELECT
+        d.diary_entry_id, d.diary_entry_datetime, d.diary_entry, a.album_title
+    FROM
+        Diary_Entries as d
+    JOIN
+        Albums as a ON d.listened_to_album_id = a.album_id
+    WHERE d.author_user_id = input_id AND d.diary_entry_id = entry_id
+    ORDER BY diary_entry_datetime ASC;
+
+
+
+END //
+DELIMITER ;
+
+/*
+stored procedure to update specific diary entry from user by entry_id
+*/
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS sp_UpdateUserEntry;
+
+
+CREATE PROCEDURE sp_UpdateUserEntry(IN input_id INT, IN entry_id INT, IN updated_entry LONGTEXT)
+BEGIN
+
+    UPDATE Diary_Entries
+    SET Diary_Entries.diary_entry = updated_entry
+    WHERE Diary_Entries.author_user_id = input_id AND Diary_Entries.diary_entry_id = entry_id;
+
+END //
+DELIMITER ;
+
+/*
 stored procedure to reset data by Jorge Rodriguez and Antonio Olaguer II
 */
 

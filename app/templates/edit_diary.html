@@ -24,23 +24,26 @@ Add Diary Entry
       margin-bottom: 1rem;
     "></span>
 
-  <form action="#" method="POST">
+  <form action="/api/edit_diary" method="POST">
     <!-- Entry Title -->
     <div class="mb-4">
-      <label for="album_id" class="form-label fw-bold">Album: Calpyso-Biguine-Merengue</label>
+      <label for="album_id" class="form-label fw-bold">{{ diary_entry.album_title }}</label>
     </div>
 
     <!-- Datetime -->
     <div class="mb-4">
       <label for="entry_datetime" class="form-label fw-bold">Date &amp; Time</label>
-      <input type="datetime-local" class="form-control" id="entry_datetime" name="entry_datetime" required="" value="2024-10-24T14:30">
+      <input type="datetime-local" class="form-control" id="entry_datetime" name="entry_datetime" required="" value="{{ diary_entry.diary_entry_datetime.strftime('%Y-%m-%dT%H:%M') }}" disabled>
     </div>
 
     <!-- Entry Content -->
     <div class="mb-4">
       <label for="entry_content" class="form-label fw-bold">Content</label>
-      <textarea class="form-control" id="entry_content" name="entry_content" rows="8" required="" placeholder="">I've never heard music from Martinique, absolutely fascinating album. I've heard of Calypso and Merengue, but never Biguine. Very fun listening experience!</textarea>
+      <textarea class="form-control" id="entry_content" name="entry_content" rows="8" required="" placeholder="">{{ diary_entry.diary_entry }}</textarea>
     </div>
+
+    <!-- Hidden Values -->
+    <input type="hidden" name="diary_entry_id" value="{{ diary_entry.diary_entry_id }}">
 
     <!-- Submit -->
     <button type="submit" class="btn w-100" style="

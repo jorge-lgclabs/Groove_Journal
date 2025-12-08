@@ -35,6 +35,8 @@ from app.models import (
     retrieve_user_albums,
     retrieve_user_albums_ids,
     retrieve_users,
+    retrieve_one_diary_entry,
+    edit_diary_entry
 )
 from app.services.utils import extract_tracks, handle_errors
 
@@ -118,10 +120,11 @@ def add_diary():
     return render_template("add_diary.html", default_album=default_album, albums=albums)
 
 
-@main_blueprint.route("/edit_diary/", methods=["GET"])
-def edit_diary():
-    albums = retrieve_user_albums(1)
-    return render_template("edit_diary.html", albums=albums)
+@main_blueprint.route("/edit_diary/<int:entry_id>", methods=["GET"])
+def edit_diary(entry_id):
+    diary_entry = retrieve_one_diary_entry(session.get("user_id", 1), entry_id)[0]
+
+    return render_template("edit_diary.html", diary_entry=diary_entry)
 
 
 @main_blueprint.route("/add_album/", methods=["GET"])
@@ -168,6 +171,14 @@ def api_add_diary_entry():
 def api_delete_diary_entry():
     diary_entry_id = request.form.get("diary_entry_id")
     delete_diary_entry(diary_entry_id)
+    return redirect(url_for("main.my_diary"))
+
+@api_blueprint.route("/edit_diary", methods=["POST"])
+def api_edit_diary_entry():
+    diary_entry_id = request.form.get("diary_entry_id")
+    user_id = session.get("user_id", 1)
+    updated_entry = request.form.get("entry_content")
+    edit_diary_entry(user_id, diary_entry_id, updated_entry)
     return redirect(url_for("main.my_diary"))
 
 

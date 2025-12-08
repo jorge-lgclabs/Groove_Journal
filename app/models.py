@@ -85,6 +85,45 @@ def retrieve_diaries(user_id):
         cursor.close()
         conn.close()
 
+def retrieve_one_diary_entry(user_id, entry_id):
+    """
+    Retrieve one specific diary entry from user_id and entry_id
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        sql = "CALL sp_GetUserEntry(%s, %s)"
+        cursor.execute(sql, [user_id, entry_id])
+        result = cursor.fetchall()
+        return result
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+def edit_diary_entry(user_id, entry_id, updated_entry):
+    """
+    Update (edit) the content of an existing diary_entry
+    """
+    conn = get_connection()
+    if not conn:
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        sql = "CALL sp_UpdateUserEntry(%s, %s, %s)"
+        cursor.execute(sql, [user_id, entry_id, updated_entry])
+        conn.commit()
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
 
 def retrieve_all_tracks():
     """
