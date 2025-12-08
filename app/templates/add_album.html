@@ -9,7 +9,8 @@ Citation:
     - Prompt: 'Show an example code snippet that uses jquery to dynamically add form field with incrementing name attributes on button click.'
     - Used with discretion and modified to fit project needs.
 - Github Copilot used to assist to use jquery to select and hide/show form fields based on datalist selection.
-    - Prompt: 'Show an example code snippet that uses jquery to hide/show form fields based on datalist selection in another input field.'
+    - Prompt: 'Give this DOM tree, <insert DOM tree here> select the input fields containing artist information
+      and hide them when the input field for track name matches a value from the datalist, show them otherwise.'
     - Used with discretion and modified to fit project needs.
 -->
 {% extends "base.html" %} 
@@ -265,8 +266,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Show/hide artist fields inside a track row
   function toggleInputs(row, hide) {
-    const dropdownWrapper = row.querySelector('.dropdown').closest('.col-md-3'); // Adjusted to match the correct parent column
-    const newArtistsCol = row.querySelector('input[name*="[new_artists]"]').closest('.col-md-6'); // Adjusted to match the correct parent column
+    const dropdownWrapper = row.querySelector('.dropdown').closest('.col-md-3'); 
+    const newArtistsCol = row.querySelector('input[name*="[new_artists]"]').closest('.col-md-6'); 
 
     if (hide) {
       if (dropdownWrapper) dropdownWrapper.style.display = "none";
