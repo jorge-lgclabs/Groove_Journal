@@ -1,3 +1,11 @@
+"""
+CS 340 - Final Project
+Configuration for the Flask web application.
+By Jorge Rodriguez and Antonio Olaguer II
+Citation:
+- Adapated from Antonio Olaguer II's personal project keyfy(https://github.com/AntonioIIOlaguer/keyfy)
+"""
+
 import os
 
 

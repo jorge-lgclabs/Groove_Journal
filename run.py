@@ -1,3 +1,10 @@
+"""
+CS 340 - Final Project
+Entry point for running the Flask web application.
+By Jorge Rodriguez and Antonio Olaguer II
+Citation: All code written by authors unless otherwise noted.
+"""
+
 from flask import current_app
 
 from app import create_app

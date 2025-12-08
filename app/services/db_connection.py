@@ -1,3 +1,10 @@
+"""
+CS 340 - Final Project
+Database connection service for the Flask web application.
+By Jorge Rodriguez and Antonio Olaguer II
+Citation: All code written by authors unless otherwise noted.
+"""
+
 import mysql.connector
 from flask import current_app
 from mysql.connector import Error

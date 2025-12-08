@@ -1,3 +1,10 @@
+"""
+CS 340 - Final Project
+Models for the Flask web application, handling database interactions.
+By Jorge Rodriguez and Antonio Olaguer II
+Citation: All code written by authors unless otherwise noted.
+"""
+
 from app.services.db_connection import get_connection
 from app.services.utils import group_albums_tracks_artists
 

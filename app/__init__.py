@@ -1,3 +1,10 @@
+"""
+CS340 - Final Project
+Initialization of the Flask application.
+By Jorge Rodriguez and Antonio Olaguer II
+Citation: All code written by authors unless otherwise noted.
+"""
+
 from flask import Flask
 
 from config import Config

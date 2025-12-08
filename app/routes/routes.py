@@ -1,3 +1,10 @@
+"""
+CS 340 - Final Project
+Routes for the Flask web application, handling both page rendering and API endpoints.
+By Jorge Rodriguez and Antonio Olaguer II
+Citation: All code written by authors unless otherwise noted.
+"""
+
 from flask import (
     Blueprint,
     flash,
@@ -207,8 +214,12 @@ def api_add_new_album():
     album_country = request.form.get("album_country")
     album_year = request.form.get("album_year")
     tracks = extract_tracks(request.form)  # Utility function to parse track data
-    running_new_artists = {}  # A running dict of new {artist:artist_id} inserted for this album
-    running_artist_album = []  # A running list of which artists have been correlated to this album
+    running_new_artists = (
+        {}
+    )  # A running dict of new {artist:artist_id} inserted for this album
+    running_artist_album = (
+        []
+    )  # A running list of which artists have been correlated to this album
 
     # print(f"Tracks: {tracks}")
 
@@ -252,15 +263,18 @@ def api_add_new_album():
                     if artist_name in running_new_artists:
                         artist_id = running_new_artists[artist_name]
                     else:
-                        artist_id = insert_new_artist(artist_name)  # If artist doesn't exist, insert it
+                        artist_id = insert_new_artist(
+                            artist_name
+                        )  # If artist doesn't exist, insert it
                         running_new_artists[artist_name] = artist_id
                     # Check if this artist has already been correlated with this album
                     if artist_id not in running_artist_album:
-                        add_artist_to_album(artist_id, new_album_id)  # Add this artist to this album only once
+                        add_artist_to_album(
+                            artist_id, new_album_id
+                        )  # Add this artist to this album only once
                         running_artist_album.append(artist_id)
                     # Finally, correlate this artist with this track
                     add_artist_to_track(artist_id, track_id)
-
 
     except Exception as e:
         handle_errors(e)
