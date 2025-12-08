@@ -1,3 +1,10 @@
+"""
+CS340 - Final Project
+Utility functions for the Flask web application.
+By Jorge Rodriguez and Antonio Olaguer II
+Citation: All code written by authors unless otherwise noted.
+"""
+
 from collections import defaultdict
 
 from flask import flash
